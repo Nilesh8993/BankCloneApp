@@ -5,7 +5,7 @@
 // DIFFERENT DATA! Contains movement dates, currency and locale
 
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Nilesh Madane',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -25,7 +25,7 @@ const account1 = {
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Akshay Bhowad',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -76,6 +76,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
+// Movement date formatting
 const formatMovementDate = function (date, locale) {
   const calcDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
@@ -94,6 +95,7 @@ const formatMovementDate = function (date, locale) {
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
+// Currancy formatting
 const formatCur = function (value, locale, currency) {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -101,6 +103,7 @@ const formatCur = function (value, locale, currency) {
   }).format(value);
 };
 
+// Display movement
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -117,7 +120,7 @@ const displayMovements = function (acc, sort = false) {
     const formattedMov = formatCur(mov, acc.locale, acc.currency);
 
     const html = `
-      <div class="movements__row">
+    <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
@@ -130,11 +133,13 @@ const displayMovements = function (acc, sort = false) {
   });
 };
 
+//Display balance
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
+// display summary
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
@@ -157,6 +162,7 @@ const calcDisplaySummary = function (acc) {
   labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
+// Creating Username
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
     acc.username = acc.owner
@@ -168,6 +174,7 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 
+// Update UI
 const updateUI = function (acc) {
   // Display movements
   displayMovements(acc);
@@ -179,6 +186,7 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+// Logout Timer
 const startLogOutTimer = function () {
   const tick = function () {
     const min = String(Math.trunc(time / 60)).padStart(2, 0);
@@ -216,6 +224,8 @@ let currentAccount, timer;
 // currentAccount = account1;
 // updateUI(currentAccount);
 // containerApp.style.opacity = 100;
+
+// User login
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -271,6 +281,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+//Transfer money
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = +inputTransferAmount.value;
@@ -302,6 +313,7 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+// Reequest loan
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -326,6 +338,7 @@ btnLoan.addEventListener('click', function (e) {
   inputLoanAmount.value = '';
 });
 
+// Close account
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -349,9 +362,11 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+// sorting movements
+
 let sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
-  displayMovements(currentAccount.movements, !sorted);
+  displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
